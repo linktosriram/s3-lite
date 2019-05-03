@@ -1,0 +1,43 @@
+allprojects {
+    apply plugin: 'java-library'
+    sourceCompatibility = 1.8
+
+    repositories {
+        jcenter()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+    }
+}
+
+project(':api') {
+    dependencies {
+        api project(':http-client-spi')
+    }
+}
+
+project(':core') {
+    dependencies {
+        api project(':api')
+        implementation project(':util')
+    }
+}
+
+project(':http-client-apache') {
+    dependencies {
+        api project(':http-client-spi')
+        api 'org.apache.httpcomponents:httpclient:4.5.9'
+    }
+}
+
+project(':http-client-url-connection') {
+    dependencies {
+        api project(':http-client-spi')
+    }
+}

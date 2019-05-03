@@ -1,0 +1,3 @@
+rootProject.name = 's3-lite'
+
+include 'http-client-spi', 'api', 'core', 'util', 'http-client-apache', 'http-client-url-connection'
