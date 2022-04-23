@@ -3,7 +3,7 @@ allprojects {
     sourceCompatibility = 1.8
 
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     test {
@@ -11,14 +11,15 @@ allprojects {
     }
 
     dependencies {
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     }
 }
 
 project(':api') {
     dependencies {
         api project(':http-client-spi')
+        api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     }
 }
 
@@ -32,7 +33,7 @@ project(':core') {
 project(':http-client-apache') {
     dependencies {
         api project(':http-client-spi')
-        api 'org.apache.httpcomponents:httpclient:4.5.9'
+        api 'org.apache.httpcomponents:httpclient:4.5.13'
     }
 }
 
