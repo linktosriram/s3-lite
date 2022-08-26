@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import static java.net.URI.create;
 
 /**
- * Reference: https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
+ * Reference: <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">Service endpoints</a>
  */
 public enum Region {
 
@@ -15,26 +15,35 @@ public enum Region {
     US_WEST_1("us-west-1", create("https://s3.us-west-1.amazonaws.com")),
     US_WEST_2("us-west-2", create("https://s3.us-west-2.amazonaws.com")),
 
-    AP_EAST("ap-east", create("https://s3.ap-east-1.amazonaws.com")),
+    AP_EAST_1("ap-east-1", create("https://s3.ap-east-1.amazonaws.com")),
     AP_SOUTH_1("ap-south-1", create("https://s3.ap-south-1.amazonaws.com")),
     AP_NORTHEAST_1("ap-northeast-1", create("https://s3.ap-northeast-1.amazonaws.com")),
     AP_NORTHEAST_2("ap-northeast-2", create("https://s3.ap-northeast-2.amazonaws.com")),
     AP_NORTHEAST_3("ap-northeast-3", create("https://s3.ap-northeast-3.amazonaws.com")),
     AP_SOUTHEAST_1("ap-southeast-1", create("https://s3.ap-southeast-1.amazonaws.com")),
     AP_SOUTHEAST_2("ap-southeast-2", create("https://s3.ap-southeast-2.amazonaws.com")),
+    AP_SOUTHEAST_3("ap-southeast-3", create("https://s3.ap-southeast-3.amazonaws.com")),
+
+    AF_SOUTH_1("af-south-1", create("https://s3.af-south-1.amazonaws.com")),
 
     EU_WEST_1("eu-west-1", create("https://s3.eu-west-1.amazonaws.com")),
     EU_WEST_2("eu-west-2", create("https://s3.eu-west-2.amazonaws.com")),
     EU_WEST_3("eu-west-3", create("https://s3.eu-west-3.amazonaws.com")),
     EU_CENTRAL_1("eu-central-1", create("https://s3.eu-central-1.amazonaws.com")),
+    EU_SOUTH_1("eu-south-1", create("https://s3.eu-south-1.amazonaws.com")),
     EU_NORTH_1("eu-north-1", create("https://s3.eu-north-1.amazonaws.com")),
 
     CA_CENTRAL_1("ca-central-1", create("https://s3.ca-central-1.amazonaws.com")),
 
     SA_EAST_1("sa-east-1", create("https://s3.sa-east-1.amazonaws.com")),
 
+    ME_SOUTH_1("me-south-1", create("https://s3.me-south-1.amazonaws.com")),
+
     CN_NORTH_1("cn-north-1", create("https://s3.cn-north-1.amazonaws.com.cn")),
-    CN_NORTHWEST_1("cn-northwest-1", create("https://s3.cn-northwest-1.amazonaws.com.cn"));
+    CN_NORTHWEST_1("cn-northwest-1", create("https://s3.cn-northwest-1.amazonaws.com.cn")),
+
+    US_GOV_EAST_1("us-gov-east-1", create("https://s3.us-gov-east-1.amazonaws.com")),
+    US_GOV_WEST_1("us-gov-west-1", create("https://s3.us-gov-west-1.amazonaws.com"));
 
     private final String regionName;
     private final URI endpoint;

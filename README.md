@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/linktosriram/s3-lite.svg?branch=master)](https://travis-ci.com/linktosriram/s3-lite)
-
 # s3-lite
 
 A Barebones Java client for AWS S3
@@ -9,89 +7,143 @@ A Barebones Java client for AWS S3
 Below is the dependency tree of AWS S3 Java SDK v2
 
 ```
-$ gradle dependencies --configuration compileClasspath
+$ gradle dependencies --configuration runtimeClasspath
 
-\--- software.amazon.awssdk:s3:2.17.175
-     +--- software.amazon.awssdk:aws-xml-protocol:2.17.175
-     |    +--- software.amazon.awssdk:aws-query-protocol:2.17.175
-     |    |    +--- software.amazon.awssdk:protocol-core:2.17.175
-     |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.175
-     |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.17.175
-     |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    |    |    +--- software.amazon.awssdk:utils:2.17.175
+\--- software.amazon.awssdk:s3:2.17.261
+     +--- software.amazon.awssdk:aws-xml-protocol:2.17.261
+     |    +--- software.amazon.awssdk:aws-query-protocol:2.17.261
+     |    |    +--- software.amazon.awssdk:protocol-core:2.17.261
+     |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.261
+     |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.17.261
+     |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    |    |    +--- software.amazon.awssdk:utils:2.17.261
      |    |    |    |    |    |    +--- org.reactivestreams:reactive-streams:1.0.3
-     |    |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
+     |    |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
      |    |    |    |    |    |    \--- org.slf4j:slf4j-api:1.7.30
-     |    |    |    |    |    +--- software.amazon.awssdk:metrics-spi:2.17.175
-     |    |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    |    |    |    \--- software.amazon.awssdk:utils:2.17.175 (*)
+     |    |    |    |    |    +--- software.amazon.awssdk:metrics-spi:2.17.261
+     |    |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    |    |    |    \--- software.amazon.awssdk:utils:2.17.261 (*)
      |    |    |    |    |    \--- org.reactivestreams:reactive-streams:1.0.3
-     |    |    |    |    +--- software.amazon.awssdk:metrics-spi:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:profiles:2.17.175
-     |    |    |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    |    |    |    |    \--- software.amazon.awssdk:annotations:2.17.175
+     |    |    |    |    +--- software.amazon.awssdk:metrics-spi:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:profiles:2.17.261
+     |    |    |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    |    |    |    |    \--- software.amazon.awssdk:annotations:2.17.261
      |    |    |    |    +--- org.slf4j:slf4j-api:1.7.30
      |    |    |    |    \--- org.reactivestreams:reactive-streams:1.0.3
-     |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    |    |    \--- software.amazon.awssdk:http-client-spi:2.17.175 (*)
-     |    |    +--- software.amazon.awssdk:aws-core:2.17.175
-     |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    +--- software.amazon.awssdk:regions:2.17.175
-     |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:profiles:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:json-utils:2.17.175
-     |    |    |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    |    |    \--- software.amazon.awssdk:third-party-jackson-core:2.17.175
+     |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    |    |    \--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     |    |    +--- software.amazon.awssdk:aws-core:2.17.261
+     |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    +--- software.amazon.awssdk:regions:2.17.261
+     |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:profiles:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:json-utils:2.17.261
+     |    |    |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    |    |    \--- software.amazon.awssdk:third-party-jackson-core:2.17.261
      |    |    |    |    \--- org.slf4j:slf4j-api:1.7.30
-     |    |    |    +--- software.amazon.awssdk:auth:2.17.175
-     |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:regions:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:profiles:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.17.175 (*)
-     |    |    |    |    +--- software.amazon.awssdk:json-utils:2.17.175 (*)
+     |    |    |    +--- software.amazon.awssdk:auth:2.17.261
+     |    |    |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:regions:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:profiles:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     |    |    |    |    +--- software.amazon.awssdk:json-utils:2.17.261 (*)
      |    |    |    |    \--- software.amazon.eventstream:eventstream:1.0.1
-     |    |    |    +--- software.amazon.awssdk:profiles:2.17.175 (*)
-     |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.175 (*)
-     |    |    |    +--- software.amazon.awssdk:http-client-spi:2.17.175 (*)
-     |    |    |    +--- software.amazon.awssdk:metrics-spi:2.17.175 (*)
-     |    |    |    +--- software.amazon.awssdk:utils:2.17.175 (*)
+     |    |    |    +--- software.amazon.awssdk:profiles:2.17.261 (*)
+     |    |    |    +--- software.amazon.awssdk:sdk-core:2.17.261 (*)
+     |    |    |    +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     |    |    |    +--- software.amazon.awssdk:metrics-spi:2.17.261 (*)
+     |    |    |    +--- software.amazon.awssdk:utils:2.17.261 (*)
      |    |    |    \--- software.amazon.eventstream:eventstream:1.0.1
-     |    |    +--- software.amazon.awssdk:sdk-core:2.17.175 (*)
-     |    |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    |    +--- software.amazon.awssdk:http-client-spi:2.17.175 (*)
-     |    |    \--- software.amazon.awssdk:utils:2.17.175 (*)
-     |    +--- software.amazon.awssdk:protocol-core:2.17.175 (*)
-     |    +--- software.amazon.awssdk:aws-core:2.17.175 (*)
-     |    +--- software.amazon.awssdk:sdk-core:2.17.175 (*)
-     |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    +--- software.amazon.awssdk:http-client-spi:2.17.175 (*)
-     |    \--- software.amazon.awssdk:utils:2.17.175 (*)
-     +--- software.amazon.awssdk:protocol-core:2.17.175 (*)
-     +--- software.amazon.awssdk:arns:2.17.175
-     |    +--- software.amazon.awssdk:annotations:2.17.175
-     |    \--- software.amazon.awssdk:utils:2.17.175 (*)
-     +--- software.amazon.awssdk:profiles:2.17.175 (*)
-     +--- software.amazon.awssdk:sdk-core:2.17.175 (*)
-     +--- software.amazon.awssdk:auth:2.17.175 (*)
-     +--- software.amazon.awssdk:http-client-spi:2.17.175 (*)
-     +--- software.amazon.awssdk:regions:2.17.175 (*)
-     +--- software.amazon.awssdk:annotations:2.17.175
-     +--- software.amazon.awssdk:utils:2.17.175 (*)
-     +--- software.amazon.awssdk:aws-core:2.17.175 (*)
-     \--- software.amazon.awssdk:metrics-spi:2.17.175 (*)
-
-(*) - dependencies omitted (listed previously)
+     |    |    +--- software.amazon.awssdk:sdk-core:2.17.261 (*)
+     |    |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    |    +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     |    |    \--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    +--- software.amazon.awssdk:protocol-core:2.17.261 (*)
+     |    +--- software.amazon.awssdk:aws-core:2.17.261 (*)
+     |    +--- software.amazon.awssdk:sdk-core:2.17.261 (*)
+     |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     |    \--- software.amazon.awssdk:utils:2.17.261 (*)
+     +--- software.amazon.awssdk:protocol-core:2.17.261 (*)
+     +--- software.amazon.awssdk:arns:2.17.261
+     |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    \--- software.amazon.awssdk:utils:2.17.261 (*)
+     +--- software.amazon.awssdk:profiles:2.17.261 (*)
+     +--- software.amazon.awssdk:sdk-core:2.17.261 (*)
+     +--- software.amazon.awssdk:auth:2.17.261 (*)
+     +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     +--- software.amazon.awssdk:regions:2.17.261 (*)
+     +--- software.amazon.awssdk:annotations:2.17.261
+     +--- software.amazon.awssdk:utils:2.17.261 (*)
+     +--- software.amazon.awssdk:aws-core:2.17.261 (*)
+     +--- software.amazon.awssdk:metrics-spi:2.17.261 (*)
+     +--- software.amazon.awssdk:apache-client:2.17.261
+     |    +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+     |    +--- software.amazon.awssdk:metrics-spi:2.17.261 (*)
+     |    +--- software.amazon.awssdk:utils:2.17.261 (*)
+     |    +--- software.amazon.awssdk:annotations:2.17.261
+     |    +--- org.apache.httpcomponents:httpclient:4.5.13
+     |    |    +--- org.apache.httpcomponents:httpcore:4.4.13
+     |    |    +--- commons-logging:commons-logging:1.2
+     |    |    \--- commons-codec:commons-codec:1.11
+     |    \--- org.apache.httpcomponents:httpcore:4.4.13
+     \--- software.amazon.awssdk:netty-nio-client:2.17.261
+          +--- software.amazon.awssdk:annotations:2.17.261
+          +--- software.amazon.awssdk:http-client-spi:2.17.261 (*)
+          +--- software.amazon.awssdk:utils:2.17.261 (*)
+          +--- software.amazon.awssdk:metrics-spi:2.17.261 (*)
+          +--- io.netty:netty-codec-http:4.1.77.Final
+          |    +--- io.netty:netty-common:4.1.77.Final
+          |    +--- io.netty:netty-buffer:4.1.77.Final
+          |    |    \--- io.netty:netty-common:4.1.77.Final
+          |    +--- io.netty:netty-transport:4.1.77.Final
+          |    |    +--- io.netty:netty-common:4.1.77.Final
+          |    |    +--- io.netty:netty-buffer:4.1.77.Final (*)
+          |    |    \--- io.netty:netty-resolver:4.1.77.Final
+          |    |         \--- io.netty:netty-common:4.1.77.Final
+          |    +--- io.netty:netty-codec:4.1.77.Final
+          |    |    +--- io.netty:netty-common:4.1.77.Final
+          |    |    +--- io.netty:netty-buffer:4.1.77.Final (*)
+          |    |    \--- io.netty:netty-transport:4.1.77.Final (*)
+          |    \--- io.netty:netty-handler:4.1.77.Final
+          |         +--- io.netty:netty-common:4.1.77.Final
+          |         +--- io.netty:netty-resolver:4.1.77.Final (*)
+          |         +--- io.netty:netty-buffer:4.1.77.Final (*)
+          |         +--- io.netty:netty-transport:4.1.77.Final (*)
+          |         \--- io.netty:netty-codec:4.1.77.Final (*)
+          +--- io.netty:netty-codec-http2:4.1.77.Final
+          |    +--- io.netty:netty-common:4.1.77.Final
+          |    +--- io.netty:netty-buffer:4.1.77.Final (*)
+          |    +--- io.netty:netty-transport:4.1.77.Final (*)
+          |    +--- io.netty:netty-codec:4.1.77.Final (*)
+          |    +--- io.netty:netty-handler:4.1.77.Final (*)
+          |    \--- io.netty:netty-codec-http:4.1.77.Final (*)
+          +--- io.netty:netty-codec:4.1.77.Final (*)
+          +--- io.netty:netty-transport:4.1.77.Final (*)
+          +--- io.netty:netty-common:4.1.77.Final
+          +--- io.netty:netty-buffer:4.1.77.Final (*)
+          +--- io.netty:netty-handler:4.1.77.Final (*)
+          +--- io.netty:netty-transport-classes-epoll:4.1.77.Final
+          |    +--- io.netty:netty-common:4.1.77.Final
+          |    +--- io.netty:netty-buffer:4.1.77.Final (*)
+          |    +--- io.netty:netty-transport:4.1.77.Final (*)
+          |    \--- io.netty:netty-transport-native-unix-common:4.1.77.Final
+          |         +--- io.netty:netty-common:4.1.77.Final
+          |         +--- io.netty:netty-buffer:4.1.77.Final (*)
+          |         \--- io.netty:netty-transport:4.1.77.Final (*)
+          +--- org.reactivestreams:reactive-streams:1.0.3
+          \--- org.slf4j:slf4j-api:1.7.30
 ```
 
-If that might be too much for your use-case (The uber-jar size is 10.5 MB)
+If that might be too much for your use-case (The uber-jar size is 10.59 MB)
 
 ## Features
 
