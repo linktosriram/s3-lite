@@ -1,6 +1,15 @@
 allprojects {
     apply plugin: 'java-library'
-    sourceCompatibility = 1.8
+
+    group = "io.github.linktosriram.s3lite"
+    version = "0.0.2-SNAPSHOT"
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+            vendor = JvmVendorSpec.AMAZON
+        }
+    }
 
     repositories {
         mavenCentral()
@@ -19,7 +28,7 @@ allprojects {
 project(':api') {
     dependencies {
         api project(':http-client-spi')
-        api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+        api 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
     }
 }
 
