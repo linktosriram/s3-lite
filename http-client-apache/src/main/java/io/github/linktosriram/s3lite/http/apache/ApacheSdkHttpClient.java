@@ -1,5 +1,6 @@
 package io.github.linktosriram.s3lite.http.apache;
 
+import io.github.linktosriram.s3lite.http.spi.IOUtils;
 import io.github.linktosriram.s3lite.http.spi.SdkHttpClient;
 import io.github.linktosriram.s3lite.http.spi.request.ImmutableRequest;
 import io.github.linktosriram.s3lite.http.spi.request.RequestBody;
@@ -13,7 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.io.IOException;
@@ -28,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static io.github.linktosriram.s3lite.http.spi.HttpStatus.fromStatusCode;
-import static io.github.linktosriram.s3lite.http.spi.IOUtils.toByteArray;
 import static io.github.linktosriram.s3lite.http.spi.SdkHttpUtils.toQueryString;
 import static java.lang.String.join;
 import static org.apache.http.impl.client.HttpClients.createDefault;
@@ -83,27 +83,23 @@ public class ApacheSdkHttpClient implements SdkHttpClient {
     }
 
     private ImmutableResponse doPut(final ImmutableRequest request) {
+        InputStream content = null;
         try {
             final URI uri = getUri(request);
             final HttpPut httpPut = new HttpPut(uri);
             addHeaders(request.getHeaders(), httpPut);
 
-            request.getRequestBody()
-                .map(RequestBody::getContentStreamProvider)
-                .ifPresent(supplier -> {
-                    try (final InputStream input = supplier.get()) {
-                        // TODO: Support streaming uploads
-                        final byte[] bytes = toByteArray(input);
-                        final HttpEntity entity = new ByteArrayEntity(bytes);
-                        httpPut.setEntity(entity);
-                    } catch (final IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                });
+            RequestBody body = request.getRequestBody().orElse(null);
+            if (body != null) {
+                content = body.getContentStreamProvider().get();
+                httpPut.setEntity(new InputStreamEntity(content, body.getContentLength()));
+            }
 
             return retrieve(httpPut);
         } catch (final URISyntaxException e) {
             throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(content);
         }
     }
 
