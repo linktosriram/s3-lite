@@ -1,15 +1,10 @@
 allprojects {
     apply plugin: 'java-library'
 
+    sourceCompatibility = JavaVersion.VERSION_11
+
     group = "io.github.linktosriram.s3lite"
     version = "0.0.2-SNAPSHOT"
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(8)
-            vendor = JvmVendorSpec.AMAZON
-        }
-    }
 
     repositories {
         mavenCentral()
