@@ -75,13 +75,22 @@ public final class Region {
     public static Region of(final String regionName, final URI endpoint) {
         return new Region(regionName, endpoint);
     }
+    public static Region of(final String regionName, final URI endpoint, final boolean usePathStyleRequests) {
+        return new Region(regionName, endpoint, usePathStyleRequests);
+    }
 
     private final String regionName;
     private final URI endpoint;
+    private final boolean usePathStyleRequests;
 
-    private Region(final String regionName, final URI endpoint) {
+    private Region(final String regionName, final URI endpoint, final boolean usePathStyleRequests) {
         this.regionName = regionName;
         this.endpoint = endpoint;
+        this.usePathStyleRequests = usePathStyleRequests;
+    }
+
+    private Region(final String regionName, final URI endpoint) {
+        this(regionName, endpoint, false);
     }
 
     public String getRegionName() {
@@ -90,6 +99,10 @@ public final class Region {
 
     public URI getEndpoint() {
         return endpoint;
+    }
+
+    public boolean getUsePathStyleRequests() {
+        return usePathStyleRequests;
     }
 
     public static Region fromString(final String regionName) {
@@ -104,6 +117,7 @@ public final class Region {
         return "Region{" +
             "regionName='" + regionName + '\'' +
             ", endpoint=" + endpoint +
+            ", usePathStyleRequests=" + usePathStyleRequests +
             '}';
     }
 }

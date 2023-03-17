@@ -34,9 +34,9 @@ import io.github.linktosriram.s3lite.http.spi.IOUtils;
 import io.github.linktosriram.s3lite.http.spi.SdkHttpClient;
 import io.github.linktosriram.s3lite.http.spi.request.RequestBody;
 import io.github.linktosriram.s3lite.http.spi.response.ImmutableResponse;
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -52,24 +52,26 @@ import static java.net.URI.create;
 
 final class DefaultS3Client implements S3Client {
 
-    private static final String HOST_FORMAT = "https://%s.%s";
+    private static final String HOST_FORMAT = "%s://%s.%s";
+    private static final String PATH_FORMAT = "%s://%s";
 
     private final RegionAwareSigner signer = RegionAwareSigner.create();
     private final AwsCredentials credentials;
     private final SdkHttpClient httpClient;
-    private final String s3Host;
+    private final Region region;
 
     DefaultS3Client(final AwsCredentials credentials, final Region region, final SdkHttpClient httpClient) {
         this.credentials = credentials;
         this.httpClient = httpClient;
-        s3Host = region.getEndpoint().getHost();
+        this.region = region;
         signer.setRegion(region);
     }
 
     @Override
     public ListObjectsV2Response listObjectsV2(final ListObjectsV2Request request) {
         final URI endpoint = getEndpoint(request.getBucketName());
-        final SignableRequest signableRequest = new DefaultSignableRequest(GET, endpoint, "/");
+        final String resourcePath = getResourcePath(request.getBucketName(), "");
+        final SignableRequest signableRequest = new DefaultSignableRequest(GET, endpoint, resourcePath);
         final SdkRequestMarshaller<ListObjectsV2Request> marshaller = new ListObjectsV2RequestMarshaller();
 
         marshaller.accept(signableRequest, request);
@@ -97,7 +99,8 @@ final class DefaultS3Client implements S3Client {
     public <T> T getObject(final GetObjectRequest request,
                            final ResponseTransformer<GetObjectResponse, T> transformer) {
         final URI endpoint = getEndpoint(request.getBucketName());
-        final SignableRequest signableRequest = new DefaultSignableRequest(GET, endpoint, "/" + request.getKey());
+        final String resourcePath = getResourcePath(request.getBucketName(), request.getKey());
+        final SignableRequest signableRequest = new DefaultSignableRequest(GET, endpoint, resourcePath);
         final SdkRequestMarshaller<GetObjectRequest> marshaller = new GetObjectRequestMarshaller();
         final SdkResponseUnmarshaller<GetObjectResponse> unmarshaller = new GetObjectResponseUnmarshaller();
 
@@ -130,7 +133,8 @@ final class DefaultS3Client implements S3Client {
     @Override
     public DeleteObjectResponse deleteObject(final DeleteObjectRequest request) {
         final URI endpoint = getEndpoint(request.getBucketName());
-        final SignableRequest signableRequest = new DefaultSignableRequest(DELETE, endpoint, "/" + request.getKey());
+        final String resourcePath = getResourcePath(request.getBucketName(), request.getKey());
+        final SignableRequest signableRequest = new DefaultSignableRequest(DELETE, endpoint, resourcePath);
         final SdkRequestMarshaller<DeleteObjectRequest> marshaller = new DeleteObjectRequestMarshaller();
         final SdkResponseUnmarshaller<DeleteObjectResponse> unmarshaller = new DeleteObjectResponseUnmarshaller();
 
@@ -151,7 +155,8 @@ final class DefaultS3Client implements S3Client {
     @Override
     public PutObjectResponse putObject(final PutObjectRequest request, final RequestBody body) {
         final URI endpoint = getEndpoint(request.getBucketName());
-        final SignableRequest signableRequest = new DefaultSignableRequest(PUT, endpoint, "/" + request.getKey());
+        final String resourcePath = getResourcePath(request.getBucketName(), request.getKey());
+        final SignableRequest signableRequest = new DefaultSignableRequest(PUT, endpoint, resourcePath);
         final SdkRequestMarshaller<PutObjectRequest> marshaller = new PutObjectRequestMarshaller();
         final SdkResponseUnmarshaller<PutObjectResponse> unmarshaller = new PutObjectResponseUnmarshaller();
 
@@ -176,7 +181,34 @@ final class DefaultS3Client implements S3Client {
     }
 
     private URI getEndpoint(final String bucketName) {
-        return create(format(HOST_FORMAT, bucketName, s3Host));
+        URI base = region.getEndpoint();
+        String endpoint;
+        if (region.getUsePathStyleRequests()) {
+            endpoint = format(PATH_FORMAT, base.getScheme(), base.getHost());
+        } else {
+            endpoint = format(HOST_FORMAT, base.getScheme(), bucketName, base.getHost());
+        }
+
+        int port = base.getPort();
+        if (port > 0) {
+            endpoint = endpoint + ":" + port;
+        }
+
+        return create(endpoint);
+    }
+
+    private String getResourcePath(final String bucketName, final String key) {
+        if (!region.getUsePathStyleRequests()) {
+            return "/" + key;
+        }
+        String path = region.getEndpoint().getPath();
+        if (path == null) {
+            path = "";
+        }
+        if (!path.endsWith("/")) {
+            path = path + "/";
+        }
+        return path + bucketName + "/" + key;
     }
 
     private static S3Exception handleErrorResponse(final ImmutableResponse httpResponse) {
