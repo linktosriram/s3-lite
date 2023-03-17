@@ -145,7 +145,12 @@ public class ApacheSdkHttpClient implements SdkHttpClient {
     }
 
     private static void addHeaders(final Map<String, List<String>> headers, final HttpMessage request) {
-        headers.forEach((name, value) -> request.addHeader(name, join(",", value)));
+        headers.forEach((name, value) -> {
+            // apache client insists on adding content-length header itself based on HttpEntity.getContentLength
+            if (!"content-length".equalsIgnoreCase(name)) {
+                request.addHeader(name, join(",", value));
+            }
+        });
     }
 
     private static Map<String, List<String>> fromHeaders(final Header[] headers) {
