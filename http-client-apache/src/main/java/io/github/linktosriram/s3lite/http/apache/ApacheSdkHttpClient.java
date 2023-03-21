@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -133,15 +132,17 @@ public class ApacheSdkHttpClient implements SdkHttpClient {
     }
 
     private static URI getUri(final ImmutableRequest request) throws URISyntaxException {
-        final Map<String, List<String>> parameters = request.getParameters();
-        final URIBuilder builder = new URIBuilder(request.getEndpoint())
-            .setPath(request.getResourcePath());
+        final StringBuilder builder = new StringBuilder()
+            .append(request.getEndpoint())
+            .append(request.getResourcePath());
 
-        if (!parameters.isEmpty()) {
-            builder.setCustomQuery(toQueryString(parameters));
+        final String queryString = toQueryString(request.getParameters());
+
+        if (!queryString.isEmpty()) {
+            builder.append("?").append(queryString);
         }
 
-        return builder.build();
+        return URI.create(builder.toString());
     }
 
     private static void addHeaders(final Map<String, List<String>> headers, final HttpMessage request) {
