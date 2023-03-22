@@ -81,12 +81,11 @@ final class DefaultS3Client implements S3Client {
             return response.getResponseBody()
                 .map(inputStream -> {
                     try (final InputStream input = inputStream) {
-                        return IOUtils.toByteArray(input);
+                        return new ListObjectsV2ResponseMapper().apply(input);
                     } catch (final IOException e) {
                         throw new UncheckedIOException(e);
                     }
                 })
-                .map(bytes -> new ListObjectsV2ResponseMapper().apply(bytes))
                 .orElseThrow(() -> new RuntimeException("No response body found"));
         } else {
             throw handleErrorResponse(response);
