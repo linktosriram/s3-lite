@@ -164,10 +164,10 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
                         } else if (bETag) {
                             s3Object = s3Object.eTag(reader.getText());
                         } else if (bOwner) {
-                            if (bContents) {
-                                s3Object = s3Object.owner(owner.build());
-                            } else if (bCommonPrefixes) {
-                                commonPrefix = commonPrefix.owner(owner.build());
+                            if (bDisplayName) {
+                                owner = owner.displayName(reader.getText());
+                            } else if (bID) {
+                                owner = owner.id(reader.getText());
                             }
                         } else if (bKey) {
                             s3Object = s3Object.key(reader.getText());
@@ -177,10 +177,6 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
                             s3Object = s3Object.size(Long.valueOf(reader.getText()));
                         } else if (bStorageClass) {
                             s3Object = s3Object.storageClass(reader.getText());
-                        } else if (bDisplayName) {
-                            owner = owner.displayName(reader.getText());
-                        } else if (bID) {
-                            owner = owner.id(reader.getText());
                         }
                         break;
 
@@ -242,6 +238,11 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
 
                             case "Owner":
                                 bOwner = false;
+                                if (bContents) {
+                                    s3Object = s3Object.owner(owner.build());
+                                } else if (bCommonPrefixes) {
+                                    commonPrefix = commonPrefix.owner(owner.build());
+                                }
                                 break;
 
                             case "Key":
