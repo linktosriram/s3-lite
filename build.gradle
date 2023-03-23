@@ -23,7 +23,6 @@ allprojects {
 project(':api') {
     dependencies {
         api project(':http-client-spi')
-        api 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
     }
 }
 
@@ -37,7 +36,7 @@ project(':core') {
 project(':http-client-apache') {
     dependencies {
         api project(':http-client-spi')
-        api 'org.apache.httpcomponents:httpclient:4.5.13'
+        api 'org.apache.httpcomponents:httpclient:4.5.14'
     }
 }
 
