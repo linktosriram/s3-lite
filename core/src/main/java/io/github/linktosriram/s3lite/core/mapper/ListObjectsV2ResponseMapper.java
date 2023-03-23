@@ -9,9 +9,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +17,14 @@ import java.util.List;
 public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2Response> {
 
     @Override
-    public ListObjectsV2Response apply(final byte[] bytes) {
+    public ListObjectsV2Response apply(final InputStream is) {
         final XMLInputFactory factory = ResponseMapper.newFactory().get();
 
         ListObjectsV2Response.Builder response = null;
         final List<CommonPrefix> commonPrefixes = new ArrayList<>();
         final List<S3Object> contents = new ArrayList<>();
 
-        try (final ByteArrayInputStream bais = new ByteArrayInputStream(bytes)) {
+        try {
             CommonPrefix.Builder commonPrefix = null;
             S3Object.Builder s3Object = null;
             Owner.Builder owner = null;
@@ -41,7 +39,7 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
             bKey = bLastModified = bETag = bOwner = bSize = bStorageClass = false;
             bDisplayName = bID = false;
 
-            final XMLStreamReader reader = factory.createXMLStreamReader(bais);
+            final XMLStreamReader reader = factory.createXMLStreamReader(is);
             while (reader.hasNext()) {
                 switch (reader.next()) {
                     case XMLStreamConstants.START_ELEMENT:
@@ -164,10 +162,10 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
                         } else if (bETag) {
                             s3Object = s3Object.eTag(reader.getText());
                         } else if (bOwner) {
-                            if (bContents) {
-                                s3Object = s3Object.owner(owner.build());
-                            } else if (bCommonPrefixes) {
-                                commonPrefix = commonPrefix.owner(owner.build());
+                            if (bDisplayName) {
+                                owner = owner.displayName(reader.getText());
+                            } else if (bID) {
+                                owner = owner.id(reader.getText());
                             }
                         } else if (bKey) {
                             s3Object = s3Object.key(reader.getText());
@@ -177,10 +175,6 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
                             s3Object = s3Object.size(Long.valueOf(reader.getText()));
                         } else if (bStorageClass) {
                             s3Object = s3Object.storageClass(reader.getText());
-                        } else if (bDisplayName) {
-                            owner = owner.displayName(reader.getText());
-                        } else if (bID) {
-                            owner = owner.id(reader.getText());
                         }
                         break;
 
@@ -242,6 +236,11 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
 
                             case "Owner":
                                 bOwner = false;
+                                if (bContents) {
+                                    s3Object = s3Object.owner(owner.build());
+                                } else if (bCommonPrefixes) {
+                                    commonPrefix = commonPrefix.owner(owner.build());
+                                }
                                 break;
 
                             case "Key":
@@ -280,8 +279,6 @@ public class ListObjectsV2ResponseMapper implements ResponseMapper<ListObjectsV2
                 .commonPrefixes(commonPrefixes)
                 .contents(contents)
                 .build();
-        } catch (final IOException e) {
-            throw new UncheckedIOException(e);
         } catch (final XMLStreamException e) {
             throw new RuntimeException(e);
         }
