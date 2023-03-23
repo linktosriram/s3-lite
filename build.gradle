@@ -1,15 +1,11 @@
 allprojects {
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = JavaVersion.VERSION_11
 
     group = "io.github.linktosriram.s3lite"
     version = "0.0.2-SNAPSHOT"
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(8)
-            vendor = JvmVendorSpec.AMAZON
-        }
-    }
 
     repositories {
         mavenCentral()
@@ -23,12 +19,23 @@ allprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
     }
+
+    java {
+        withSourcesJar()
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+            }
+        }
+    }
 }
 
 project(':api') {
     dependencies {
         api project(':http-client-spi')
-        api 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
     }
 }
 
@@ -42,7 +49,7 @@ project(':core') {
 project(':http-client-apache') {
     dependencies {
         api project(':http-client-spi')
-        api 'org.apache.httpcomponents:httpclient:4.5.13'
+        api 'org.apache.httpcomponents:httpclient:4.5.14'
     }
 }
 

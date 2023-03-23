@@ -19,6 +19,7 @@ import io.github.linktosriram.s3lite.api.response.ResponseTransformer;
 import io.github.linktosriram.s3lite.core.auth.DefaultSignableRequest;
 import io.github.linktosriram.s3lite.core.auth.RegionAwareSigner;
 import io.github.linktosriram.s3lite.core.auth.SignableRequest;
+import io.github.linktosriram.s3lite.core.mapper.ErrorResponseMapper;
 import io.github.linktosriram.s3lite.core.mapper.ListObjectsV2ResponseMapper;
 import io.github.linktosriram.s3lite.core.marshal.DeleteObjectRequestMarshaller;
 import io.github.linktosriram.s3lite.core.marshal.GetObjectRequestMarshaller;
@@ -35,8 +36,6 @@ import io.github.linktosriram.s3lite.http.spi.SdkHttpClient;
 import io.github.linktosriram.s3lite.http.spi.request.RequestBody;
 import io.github.linktosriram.s3lite.http.spi.response.ImmutableResponse;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -181,34 +180,35 @@ final class DefaultS3Client implements S3Client {
 
     private static S3Exception handleErrorResponse(final ImmutableResponse httpResponse) {
         final HttpStatus status = httpResponse.getStatus();
+        final S3Exception fallbackException = new S3Exception(
+            ErrorResponse.builder()
+            .message("Service: S3, Status Code: " + status.getStatusCode())
+            .build()
+        );
+
         if (status.is3xxRedirection()) {
             httpResponse.getResponseBody().ifPresent(IOUtils::closeQuietly);
-            final ErrorResponse errorResponse = new ErrorResponse();
-            errorResponse.setMessage("Service: S3, Status Code: " + status.getStatusCode());
-            return new S3Exception(errorResponse);
+            return fallbackException;
         } else {
             return httpResponse.getResponseBody()
                 .map(inputStream -> {
                     try (final InputStream input = inputStream) {
-                        final ErrorResponse errorResponse = (ErrorResponse) JAXBContext.newInstance(ErrorResponse.class)
-                            .createUnmarshaller()
-                            .unmarshal(input);
-
-                        switch (errorResponse.getCode()) {
-                            case "NoSuchBucket":
-                                return new NoSuchBucketException(errorResponse);
-                            case "NoSuchKey":
-                                return new NoSuchKeyException(errorResponse);
-                            default:
-                                return new S3Exception(errorResponse);
+                        final ErrorResponse errorResponse = new ErrorResponseMapper().apply(input);
+                        if (errorResponse != null) {
+                            switch (errorResponse.getCode()) {
+                                case "NoSuchBucket":
+                                    return new NoSuchBucketException(errorResponse);
+                                case "NoSuchKey":
+                                    return new NoSuchKeyException(errorResponse);
+                                default:
+                                    return new S3Exception(errorResponse);
+                            }
                         }
-                    } catch (final JAXBException e) {
-                        throw new RuntimeException(e);
+                        return fallbackException;
                     } catch (final IOException e) {
                         throw new UncheckedIOException(e);
                     }
-                })
-                .orElseThrow(() -> new RuntimeException("Service: S3, Status Code: " + status.getStatusCode()));
+                }).orElseThrow(() -> fallbackException);
         }
     }
 }

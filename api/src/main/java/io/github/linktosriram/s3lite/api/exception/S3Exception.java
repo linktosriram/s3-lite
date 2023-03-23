@@ -6,13 +6,13 @@ public class S3Exception extends RuntimeException {
 
     private final String requestId;
 
-    private final String hostId;
+    private final String resource;
 
     public S3Exception(final ErrorResponse errorResponse) {
         super(errorResponse.getMessage());
         code = errorResponse.getCode();
         requestId = errorResponse.getRequestId();
-        hostId = errorResponse.getHostId();
+        resource = errorResponse.getResource();
     }
 
     public String getCode() {
@@ -23,7 +23,7 @@ public class S3Exception extends RuntimeException {
         return requestId;
     }
 
-    public String getHostId() {
-        return hostId;
+    public String getResource() {
+        return resource;
     }
 }
